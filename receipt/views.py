@@ -5,6 +5,7 @@ from .serializers import ReceiptSerializer, ReceiptModelCreateSerialzier, Receip
 
 
 class ReceiptProcessorGetView(APIView):
+    """Gets a stored Receipt and returns the calculated number of points"""
     def get(self, request, _id):
         try:
             receipt = Receipt.objects.get(id=_id)
@@ -14,6 +15,7 @@ class ReceiptProcessorGetView(APIView):
 
 
 class ReceiptProcessorPostView(APIView):
+    """Creates and validates a given Receipt and returns the generated UUID"""
     def post(self, request):
         serializer = ReceiptSerializer(data=request.data)
         if serializer.is_valid():
