@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from receipt import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('rest_framework.urls')),
     path('receipts/process', views.ReceiptProcessorPostView.as_view()),
-    re_path(r'receipts/(?P<_id>\S+)/points', views.ReceiptProcessorGetView.as_view()),
+    path('receipts/<uuid:_id>/points', views.ReceiptProcessorGetView.as_view()),
 ]
