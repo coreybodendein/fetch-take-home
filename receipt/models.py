@@ -10,7 +10,7 @@ class Receipt(models.Model):
     retailer = models.CharField(max_length=255)
     purchase_date = models.DateField()
     purchase_time = models.TimeField()
-    total = models.CharField(max_length=10)
+    total = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return f'{self.id}: {self.points()}'
@@ -24,7 +24,7 @@ class Receipt(models.Model):
         points += sum(1 if char.isalpha() else 0 for char in retailer)
 
         # 50 points if the total is a round dollar amount with no cents.
-        total = Decimal(self.total)
+        total = self.total
         # mod 1 returns decimal part, if round number it's falsy, Decimal('0.00')
         if not total % Decimal('1'):
             points += 50
@@ -42,7 +42,7 @@ class Receipt(models.Model):
         for item in items:
             description = item.short_description.strip()
             if not len(description) % 3:
-                price = Decimal(item.price)
+                price = item.price
                 item_points = price * Decimal('0.2')
                 # round up to whole dollar
                 item_points = item_points.quantize(Decimal('1.'), rounding=ROUND_UP)
@@ -67,7 +67,7 @@ class Item(models.Model):
     """Model representing a receipt item"""
     receipt = models.ForeignKey(to=Receipt, on_delete=models.CASCADE, related_name='items')
     short_description = models.CharField(max_length=255)
-    price = models.CharField(max_length=10)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         return f'{self.receipt_id}: {self.short_description}'
